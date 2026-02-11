@@ -3,67 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dark AI</title>
+    <title>Dark AI (Gemini)</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        /* CSS Khusus Tema Hacker */
         body { background-color: #050505; color: #e5e5e5; }
         
-        /* Garis Scan TV Tabung */
+        /* Efek Garis TV */
         .scanline {
             position: fixed; top: 0; left: 0; w-full; h-full;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
-            background-size: 100% 4px;
-            pointer-events: none; z-index: 50;
+            background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px; pointer-events: none; z-index: 50;
         }
 
-        /* Scrollbar Merah Gelap */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #111; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #991b1b; }
 
-        /* Format Teks Markdown */
-        .prose p { margin-bottom: 0.5em; }
-        .prose strong { color: #f87171; font-weight: bold; } /* Merah terang */
-        .prose code { background: #333; padding: 2px 4px; rounded: 4px; font-family: monospace; color: #fbbf24; }
-        .prose pre { background: #111; padding: 10px; border-radius: 6px; overflow-x: auto; border: 1px solid #333; }
-        .prose ul { list-style-type: disc; margin-left: 20px; }
-        .prose ol { list-style-type: decimal; margin-left: 20px; }
-
+        /* Format Teks */
+        .prose strong { color: #60a5fa; } /* Biru muda buat Gemini */
+        .prose code { background: #1f2937; color: #93c5fd; padding: 2px 5px; border-radius: 4px; }
+        .prose pre { background: #0f172a; padding: 10px; border-radius: 6px; overflow-x: auto; border: 1px solid #1e293b; }
         .hidden-panel { display: none; }
     </style>
 </head>
-<body class="h-screen flex flex-col font-mono overflow-hidden selection:bg-red-900 selection:text-white">
+<body class="h-screen flex flex-col font-mono overflow-hidden selection:bg-blue-900 selection:text-white">
     
     <div class="scanline"></div>
 
-    <div class="border-b border-red-900/40 p-3 flex justify-between items-center bg-black/95 z-20 backdrop-blur">
+    <div class="border-b border-blue-900/40 p-3 flex justify-between items-center bg-black/95 z-20 backdrop-blur">
         <div class="flex items-center gap-2">
-            <div class="w-2 h-2 bg-red-600 rounded-full animate-pulse shadow-[0_0_8px_#dc2626]"></div>
-            <h1 class="text-lg font-bold tracking-widest text-gray-100">DARK <span class="text-red-600">AI</span></h1>
+            <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_#3b82f6]"></div>
+            <h1 class="text-lg font-bold tracking-widest text-gray-100">DARK <span class="text-blue-500">GEMINI</span></h1>
         </div>
-        <button onclick="toggleConfig()" class="text-[10px] border border-red-800 text-red-500 px-2 py-1 hover:bg-red-900/20 transition uppercase tracking-widest">
+        <button onclick="toggleConfig()" class="text-[10px] border border-blue-800 text-blue-500 px-2 py-1 hover:bg-blue-900/20 transition uppercase tracking-widest">
             [ CONFIG ]
         </button>
     </div>
 
-    <div id="config-panel" class="hidden-panel absolute top-14 left-0 right-0 bg-black/95 border-b border-red-900 p-4 z-30 shadow-2xl">
-        <label class="text-red-500 text-xs font-bold uppercase tracking-widest mb-2 block">System Prompt (Kepribadian)</label>
-        <textarea id="system-prompt-input" rows="3" class="w-full bg-gray-900 border border-gray-700 text-gray-300 p-2 text-sm focus:border-red-600 focus:outline-none rounded"></textarea>
-        <button onclick="saveConfig()" class="mt-3 bg-red-800 hover:bg-red-700 text-white w-full py-2 text-xs font-bold uppercase tracking-widest rounded">
+    <div id="config-panel" class="hidden-panel absolute top-14 left-0 right-0 bg-black/95 border-b border-blue-900 p-4 z-30 shadow-2xl">
+        <label class="text-blue-500 text-xs font-bold uppercase tracking-widest mb-2 block">System Prompt (Kepribadian)</label>
+        <textarea id="system-prompt-input" rows="3" class="w-full bg-gray-900 border border-gray-700 text-gray-300 p-2 text-sm focus:border-blue-600 focus:outline-none rounded"></textarea>
+        <button onclick="saveConfig()" class="mt-3 bg-blue-800 hover:bg-blue-700 text-white w-full py-2 text-xs font-bold uppercase tracking-widest rounded">
             Simpan Perubahan
         </button>
     </div>
 
     <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-5 scroll-smooth pb-24">
         <div class="flex gap-3">
-            <div class="w-6 h-6 bg-red-900/20 border border-red-800 text-red-500 flex items-center justify-center shrink-0 text-[10px] font-bold">AI</div>
+            <div class="w-6 h-6 bg-blue-900/20 border border-blue-800 text-blue-500 flex items-center justify-center shrink-0 text-[10px] font-bold">AI</div>
             <div class="bg-gray-900/60 border border-gray-800 p-3 rounded text-sm text-gray-300 max-w-[90%] shadow-lg">
-                <p>Sistem aktif. Menunggu perintah...</p>
+                <p>Gemini Online. Siap menerima perintah.</p>
             </div>
         </div>
     </div>
@@ -71,9 +64,9 @@
     <div class="fixed bottom-0 w-full bg-black/95 border-t border-gray-800 p-3 z-20 pb-6 md:pb-3">
         <div class="max-w-4xl mx-auto flex gap-2">
             <input type="text" id="user-input" autocomplete="off"
-                class="flex-1 bg-gray-900 border border-gray-700 text-white p-3 rounded focus:outline-none focus:border-red-600 placeholder-gray-600 text-sm"
-                placeholder="Ketik sesuatu...">
-            <button onclick="sendMessage()" class="bg-red-800 hover:bg-red-700 text-white px-5 rounded font-bold text-sm uppercase tracking-wider">
+                class="flex-1 bg-gray-900 border border-gray-700 text-white p-3 rounded focus:outline-none focus:border-blue-600 placeholder-gray-600 text-sm"
+                placeholder="Tulis perintah...">
+            <button onclick="sendMessage()" class="bg-blue-800 hover:bg-blue-700 text-white px-5 rounded font-bold text-sm uppercase tracking-wider">
                 KIRIM
             </button>
         </div>
@@ -81,19 +74,17 @@
 
     <script>
         // ==========================================
-        //  MASUKKAN API KEY ANDA DI BAWAH INI
+        //  MASUKKAN API KEY GOOGLE GEMINI DI SINI
         // ==========================================
-        const API_KEY = 'sk-3e816b07baab4e8aac2c47c955f50cd0'; 
+        const API_KEY = 'AIzaSyDm8jfEJOQrIRF1panPzh_UpgRvKaYTeTE'; 
         // ==========================================
 
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
         
-        // Cek Local Storage untuk Prompt
-        let systemPrompt = localStorage.getItem('dark_ai_prompt') || "Kamu adalah 'Dark AI'. Jawab singkat, padat, teknis, dan sedikit misterius.";
+        let systemPrompt = localStorage.getItem('gemini_prompt') || "Kamu adalah 'Dark Gemini', asisten canggih yang misterius. Jawab singkat dan cerdas.";
         document.getElementById('system-prompt-input').value = systemPrompt;
 
-        // Enter untuk kirim
         userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
         function toggleConfig() {
@@ -104,7 +95,7 @@
             const val = document.getElementById('system-prompt-input').value;
             if(val) {
                 systemPrompt = val;
-                localStorage.setItem('dark_ai_prompt', val);
+                localStorage.setItem('gemini_prompt', val);
                 alert("Kepribadian disimpan!");
                 toggleConfig();
             }
@@ -114,43 +105,45 @@
             const text = userInput.value.trim();
             if (!text) return;
             
-            // Cek API Key dulu
-            if (API_KEY === 'MASUKKAN_API_KEY_ANDA_DI_SINI' || API_KEY.length < 10) {
-                alert("ERROR: API Key belum dimasukkan di dalam kode index.html!");
+            if (API_KEY === 'MASUKKAN_API_KEY_GEMINI_DI_SINI' || API_KEY.length < 10) {
+                alert("API Key belum dimasukkan!");
                 return;
             }
 
             appendMessage('user', text);
             userInput.value = '';
-            
             const loadingId = showLoading();
 
             try {
-                const response = await fetch('https://api.deepseek.com/chat/completions', {
+                // URL Endpoint Google Gemini (Model 1.5 Flash)
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+                
+                const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: "deepseek-chat",
-                        messages: [
-                            { role: "system", content: systemPrompt },
-                            { role: "user", content: text }
-                        ],
-                        temperature: 0.7
+                        contents: [{
+                            parts: [{ text: text }]
+                        }],
+                        systemInstruction: {
+                            parts: [{ text: systemPrompt }]
+                        }
                     })
                 });
 
                 const data = await response.json();
                 removeLoading(loadingId);
 
-                if (data.choices && data.choices[0].message) {
-                    appendMessage('ai', data.choices[0].message.content);
-                } else if (data.error) {
-                    appendMessage('system', "API ERROR: " + data.error.message);
+                if (data.candidates && data.candidates[0].content) {
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    appendMessage('ai', aiResponse);
+                } else {
+                    appendMessage('system', "Error: Gagal mendapatkan respon dari Gemini.");
                 }
 
             } catch (err) {
                 removeLoading(loadingId);
-                appendMessage('system', "Koneksi Gagal. Cek internet.");
+                appendMessage('system', "Koneksi Error: " + err.message);
             }
         }
 
@@ -158,26 +151,20 @@
             const div = document.createElement('div');
             div.className = `flex gap-3 ${role === 'user' ? 'flex-row-reverse' : ''}`;
             
-            let contentHtml = text;
-            // Jika AI, gunakan format Markdown (tebal/miring/code)
-            if (role === 'ai') {
-                contentHtml = marked.parse(text);
-            }
-
-            // Styling Bubble
+            let contentHtml = role === 'ai' ? marked.parse(text) : `<p>${text}</p>`;
             let bubble = role === 'ai' 
                 ? 'bg-gray-900/80 border border-gray-800 text-gray-300 prose prose-invert max-w-none' 
-                : 'bg-red-900/20 border border-red-800 text-white';
+                : 'bg-blue-900/20 border border-blue-800 text-white';
 
             if (role === 'system') {
                 div.innerHTML = `<div class="w-full text-center text-red-500 text-xs p-2 border border-red-900 bg-red-950/50">${text}</div>`;
             } else {
                 div.innerHTML = `
-                    <div class="w-6 h-6 flex items-center justify-center shrink-0 text-[10px] font-bold border ${role === 'ai' ? 'bg-red-900/20 border-red-800 text-red-500' : 'bg-gray-700 border-gray-600 text-gray-300'}">
+                    <div class="w-6 h-6 flex items-center justify-center shrink-0 text-[10px] font-bold border ${role === 'ai' ? 'bg-blue-900/20 border-blue-800 text-blue-500' : 'bg-gray-700 border-gray-600 text-gray-300'}">
                         ${role === 'ai' ? 'AI' : 'OP'}
                     </div>
                     <div class="p-3 rounded text-sm max-w-[85%] shadow-lg ${bubble}">
-                        ${role === 'ai' ? contentHtml : `<p>${text}</p>`}
+                        ${contentHtml}
                     </div>
                 `;
             }
@@ -192,11 +179,11 @@
             div.id = id;
             div.className = 'flex gap-3';
             div.innerHTML = `
-                <div class="w-6 h-6 bg-red-900/20 border border-red-800 text-red-500 flex items-center justify-center shrink-0 text-[10px]">AI</div>
+                <div class="w-6 h-6 bg-blue-900/20 border border-blue-800 text-blue-500 flex items-center justify-center shrink-0 text-[10px]">AI</div>
                 <div class="bg-gray-900/50 border border-gray-800 p-3 rounded flex gap-1 items-center">
-                    <span class="w-1.5 h-1.5 bg-red-600 animate-pulse"></span>
-                    <span class="w-1.5 h-1.5 bg-red-600 animate-pulse delay-75"></span>
-                    <span class="w-1.5 h-1.5 bg-red-600 animate-pulse delay-150"></span>
+                    <span class="w-1.5 h-1.5 bg-blue-500 animate-pulse"></span>
+                    <span class="w-1.5 h-1.5 bg-blue-500 animate-pulse delay-75"></span>
+                    <span class="w-1.5 h-1.5 bg-blue-500 animate-pulse delay-150"></span>
                 </div>
             `;
             chatContainer.appendChild(div);
@@ -204,10 +191,7 @@
             return id;
         }
 
-        function removeLoading(id) {
-            const el = document.getElementById(id);
-            if(el) el.remove();
-        }
+        function removeLoading(id) { const el = document.getElementById(id); if(el) el.remove(); }
     </script>
 </body>
 </html>
